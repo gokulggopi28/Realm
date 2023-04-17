@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     Button Submit,display;
     private Realm realm;
     private String courseName1,courseDuration1,courseDescription1,courseTrack1;
-Button Display;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

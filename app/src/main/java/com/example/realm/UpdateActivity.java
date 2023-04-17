@@ -20,7 +20,7 @@ public class UpdateActivity extends AppCompatActivity {
     // our values from edittext fields.
     private String courseName, courseDuration, courseDescription, courseTracks;
     private long id;
-    private Button updateCourseBtn;
+    private Button updateCourseBtn,deleteCourseBtn;
     private Realm realm;
 
     @Override
@@ -37,7 +37,7 @@ public class UpdateActivity extends AppCompatActivity {
                 courseDurationEdt = findViewById(R.id.idEdtCourseDuration);
                 courseTracksEdt = findViewById(R.id.idEdtCourseTracks);
                 updateCourseBtn = findViewById(R.id.idBtnUpdateCourse);
-
+                deleteCourseBtn = findViewById(R.id.idBtnDeleteCourse);
                 // on below line we are getting data which is passed from intent.
                 courseName = getIntent().getStringExtra("courseName");
                 courseDuration = getIntent().getStringExtra("courseDuration");
@@ -87,28 +87,60 @@ public class UpdateActivity extends AppCompatActivity {
                         finish();
                     }
                 });
+
+        // adding on click listener for delete course button.
+        deleteCourseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // on below line we are calling a method to delete course.
+                deleteCourse(id);
+                // after deleting we are displaying a toast message as course deleted.
+                Toast.makeText(UpdateActivity.this, "Course Deleted.", Toast.LENGTH_SHORT).show();
+                // after that we are opening a new activity via an intent.
+                Intent i = new Intent(UpdateActivity.this, DisplayActivity.class);
+                startActivity(i);
+                finish();
             }
+        });
+    }
+    private void updateCourse(DataModel modal, String courseName, String courseDescription, String courseDuration, String courseTracks) {
 
-            private void updateCourse(DataModel modal, String courseName, String courseDescription, String courseDuration, String courseTracks) {
+        // on below line we are calling
+        // a method to execute a transaction.
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
 
-                // on below line we are calling
-                // a method to execute a transaction.
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
+                // on below line we are setting data to our modal class
+                // which we get from our edit text fields.
+                modal.setCourseDescription(courseDescription);
+                modal.setCourseName(courseName);
+                modal.setCourseDuration(courseDuration);
+                modal.setCourseTracks(courseTracks);
 
-                        // on below line we are setting data to our modal class
-                        // which we get from our edit text fields.
-                        modal.setCourseDescription(courseDescription);
-                        modal.setCourseName(courseName);
-                        modal.setCourseDuration(courseDuration);
-                        modal.setCourseTracks(courseTracks);
-
-                        // inside on execute method we are calling a method to copy
-                        // and update to real m database from our modal class.
-                        realm.copyToRealmOrUpdate(modal);
-                    }
-                });
+                // inside on execute method we are calling a method to copy
+                // and update to real m database from our modal class.
+                realm.copyToRealmOrUpdate(modal);
             }
-        }
+        });
+    }
+
+    // deleteCourse() function
+    private void deleteCourse(long id) {
+        // on below line we are finding data from our modal class by comparing it with the course id.
+        DataModel modal = realm.where(DataModel.class).equalTo("id", id).findFirst();
+        // on below line we are executing a realm transaction.
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                // on below line we are calling a method for deleting this course
+                modal.deleteFromRealm();
+            }
+        });
+    }
+
+
+}
+
+
 

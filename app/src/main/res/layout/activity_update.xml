@@ -47,7 +47,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Update Course"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"/>
+
+        <!--Button for deleting your course to database-->
+        <Button
+            android:id="@+id/idBtnDeleteCourse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Delete Course"
+            android:textAllCaps="false"
+            android:visibility="visible" />
+
 
     </LinearLayout>
 
